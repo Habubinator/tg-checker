@@ -77,10 +77,15 @@ export class Repository {
     }
 
     async getUserProxies(userId: string): Promise<Proxy[]> {
-        return prisma.proxy.findMany({
-            where: { userId, isActive: true },
-            orderBy: { lastUsed: "asc" },
-        });
+        return [
+            ...(await prisma.proxy.findMany({
+                where: { userId, isActive: true, lastUsed: null },
+            })),
+            ...(await prisma.proxy.findMany({
+                where: { userId, isActive: true, lastUsed: { not: null } },
+                orderBy: { lastUsed: "asc" },
+            })),
+        ];
     }
 
     async deleteProxy(id: string, userId: string): Promise<Proxy> {
