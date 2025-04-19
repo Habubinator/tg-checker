@@ -1,4 +1,3 @@
-// Handle the start command
 import TelegramBot, { Message } from "node-telegram-bot-api";
 import { prisma } from "../database/prisma.database";
 import { UserState } from "../types";

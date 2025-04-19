@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import { Browser, Page } from "puppeteer";
-import { pageProxy } from "@lem0-packages/puppeteer-page-proxy";
+import useProxy from "@lem0-packages/puppeteer-page-proxy";
 import { GooglePlayAppResult, ParsedProxy } from "../types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -77,7 +77,7 @@ class GooglePlayCheckerService {
             // Set proxy if provided
             if (proxy) {
                 const proxyUrl = this.formatProxyUrl(proxy);
-                await pageProxy(page, proxyUrl);
+                await useProxy(page, proxyUrl);
             }
 
             // Set timeout for navigation
