@@ -510,6 +510,40 @@ export class ProxyCommands {
             }
         }
 
+        // Handle Pagination
+        else if (query.data.startsWith("proxies_page_")) {
+            const proxyPage = query.data.replace("proxies_page_", "");
+            try {
+                const user = await repository.getOrCreateUser(chatId);
+                const proxies = await repository.getUserProxies(user.id);
+
+                if (proxies.length === 0) {
+                    await this.bot.sendMessage(
+                        chatId,
+                        "⚠️ У вас нет добавленных прокси.",
+                        { reply_markup: Keyboard.getMainKeyboard() }
+                    );
+                    return;
+                }
+
+                await this.bot.sendMessage(
+                    chatId,
+                    "Выберите прокси для редактирования:",
+                    {
+                        reply_markup: Keyboard.getProxiesKeyboard(
+                            proxies,
+                            +proxyPage
+                        ),
+                    }
+                );
+            } catch (error) {
+                await this.bot.sendMessage(
+                    chatId,
+                    `❌ Ошибка: ${error.message}`
+                );
+            }
+        }
+
         // Always answer callback query to remove loading state
         await this.bot.answerCallbackQuery(query.id);
     }

@@ -567,6 +567,42 @@ export class SchedulerCommands {
         }
 
         // Handle back to schedules list
+        else if (query.data.startsWith("schedules_page_")) {
+            const schedulePage = query.data.replace("schedules_page_", "");
+            try {
+                const user = await repository.getOrCreateUser(chatId);
+                const schedules = await repository.getUserCheckSchedules(
+                    user.id
+                );
+
+                if (schedules.length === 0) {
+                    await this.bot.sendMessage(
+                        chatId,
+                        "⚠️ У вас нет добавленных расписаний проверок.",
+                        { reply_markup: Keyboard.getMainKeyboard() }
+                    );
+                    return;
+                }
+
+                await this.bot.sendMessage(
+                    chatId,
+                    "Выберите расписание для редактирования:",
+                    {
+                        reply_markup: Keyboard.getSchedulesKeyboard(
+                            schedules,
+                            +schedulePage
+                        ),
+                    }
+                );
+            } catch (error) {
+                await this.bot.sendMessage(
+                    chatId,
+                    `❌ Ошибка: ${error.message}`
+                );
+            }
+        }
+
+        // Handle pagination
         else if (query.data === "back_to_schedules") {
             try {
                 const user = await repository.getOrCreateUser(chatId);

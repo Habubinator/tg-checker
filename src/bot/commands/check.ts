@@ -19,10 +19,10 @@ export class CheckCommands {
             /🔍 Запустить проверку/,
             this.handleStartCheck.bind(this)
         );
-        this.bot.onText(
-            /🔄 Статус проверки/,
-            this.handleCheckStatus.bind(this)
-        );
+        // this.bot.onText(
+        //     /🔄 Статус проверки/,
+        //     this.handleCheckStatus.bind(this)
+        // );
 
         // Handle callback queries
         this.bot.on("callback_query", this.handleCallbackQuery.bind(this));

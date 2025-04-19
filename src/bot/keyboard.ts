@@ -34,11 +34,36 @@ export class Keyboard {
     }
 
     static getLinksKeyboard(
-        links: Array<{ id: string; packageName: string }>
+        links: Array<{ id: string; packageName: string }>,
+        page: number = 0,
+        pageSize: number = 50
     ): TelegramBot.InlineKeyboardMarkup {
-        const keyboard = links.map((link) => [
+        const totalPages = Math.ceil(links.length / pageSize);
+        const start = page * pageSize;
+        const end = start + pageSize;
+        const currentLinks = links.slice(start, end);
+
+        const keyboard = currentLinks.map((link) => [
             { text: link.packageName, callback_data: `link_${link.id}` },
         ]);
+
+        const navigationButtons = [];
+        if (page > 0) {
+            navigationButtons.push({
+                text: "⬅️ Назад",
+                callback_data: `page_link_${page - 1}`,
+            });
+        }
+        if (page < totalPages - 1) {
+            navigationButtons.push({
+                text: "➡️ Далее",
+                callback_data: `page_link_${page + 1}`,
+            });
+        }
+
+        if (navigationButtons.length > 0) {
+            keyboard.push(navigationButtons);
+        }
 
         return {
             inline_keyboard: keyboard,
@@ -46,14 +71,39 @@ export class Keyboard {
     }
 
     static getProxiesKeyboard(
-        proxies: Array<{ id: string; ipAddress: string; port: string }>
+        proxies: Array<{ id: string; ipAddress: string; port: string }>,
+        page: number = 0,
+        pageSize: number = 50
     ): TelegramBot.InlineKeyboardMarkup {
-        const keyboard = proxies.map((proxy) => [
+        const totalPages = Math.ceil(proxies.length / pageSize);
+        const start = page * pageSize;
+        const end = start + pageSize;
+        const currentProxies = proxies.slice(start, end);
+
+        const keyboard = currentProxies.map((proxy) => [
             {
                 text: `${proxy.ipAddress}:${proxy.port}`,
                 callback_data: `proxy_${proxy.id}`,
             },
         ]);
+
+        const navigationButtons = [];
+        if (page > 0) {
+            navigationButtons.push({
+                text: "⬅️ Назад",
+                callback_data: `proxies_page_${page - 1}`,
+            });
+        }
+        if (page < totalPages - 1) {
+            navigationButtons.push({
+                text: "➡️ Далее",
+                callback_data: `proxies_page_${page + 1}`,
+            });
+        }
+
+        if (navigationButtons.length > 0) {
+            keyboard.push(navigationButtons);
+        }
 
         return {
             inline_keyboard: keyboard,
@@ -61,11 +111,36 @@ export class Keyboard {
     }
 
     static getSchedulesKeyboard(
-        schedules: Array<{ id: string; time: string }>
+        schedules: Array<{ id: string; time: string }>,
+        page: number = 0,
+        pageSize: number = 50
     ): TelegramBot.InlineKeyboardMarkup {
-        const keyboard = schedules.map((schedule) => [
+        const totalPages = Math.ceil(schedules.length / pageSize);
+        const start = page * pageSize;
+        const end = start + pageSize;
+        const currentSchedules = schedules.slice(start, end);
+
+        const keyboard = currentSchedules.map((schedule) => [
             { text: schedule.time, callback_data: `schedule_${schedule.id}` },
         ]);
+
+        const navigationButtons = [];
+        if (page > 0) {
+            navigationButtons.push({
+                text: "⬅️ Назад",
+                callback_data: `schedules_page_${page - 1}`,
+            });
+        }
+        if (page < totalPages - 1) {
+            navigationButtons.push({
+                text: "➡️ Далее",
+                callback_data: `schedules_page_${page + 1}`,
+            });
+        }
+
+        if (navigationButtons.length > 0) {
+            keyboard.push(navigationButtons);
+        }
 
         return {
             inline_keyboard: keyboard,

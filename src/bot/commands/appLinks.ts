@@ -441,6 +441,40 @@ export class AppLinksCommands {
             }
         }
 
+        // Handle Pagination
+        else if (query.data.startsWith("page_link_")) {
+            const linkPage = query.data.replace("page_link_", "");
+            try {
+                const user = await repository.getOrCreateUser(chatId);
+                const links = await repository.getUserAppLinks(user.id);
+
+                if (links.length === 0) {
+                    await this.bot.sendMessage(
+                        chatId,
+                        "⚠️ У вас нет добавленных ссылок.",
+                        { reply_markup: Keyboard.getMainKeyboard() }
+                    );
+                    return;
+                }
+
+                await this.bot.sendMessage(
+                    chatId,
+                    "Выберите ссылку для редактирования:",
+                    {
+                        reply_markup: Keyboard.getLinksKeyboard(
+                            links,
+                            +linkPage
+                        ),
+                    }
+                );
+            } catch (error) {
+                await this.bot.sendMessage(
+                    chatId,
+                    `❌ Ошибка: ${error.message}`
+                );
+            }
+        }
+
         // Handle cancel
         else if (query.data === "cancel") {
             await this.bot.sendMessage(chatId, "✅ Действие отменено.", {
