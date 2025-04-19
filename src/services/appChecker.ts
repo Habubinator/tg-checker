@@ -5,7 +5,7 @@ import pageProxy from "@lem0-packages/puppeteer-page-proxy";
 import { getRandomUserAgent } from "../utils/userAgent";
 import { CONFIG } from "../config";
 import { AppLink, Proxy } from "../../generated/prisma";
-import { repository } from "@db/repository";
+import { repository } from "../db/repository";
 
 puppeteer.use(StealthPlugin());
 puppeteer.use(

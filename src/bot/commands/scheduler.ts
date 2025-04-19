@@ -60,6 +60,9 @@ export class SchedulerCommands {
     }
 
     private async handleUserInput(msg: TelegramBot.Message) {
+        if (!(await repository.isUserPermitted(msg.from.username))) {
+            return;
+        }
         if (!msg.text) return;
 
         const chatId = msg.chat.id.toString();

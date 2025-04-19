@@ -222,11 +222,22 @@ export class Repository {
 
     // Auth
     async isUserPermitted(username: string) {
-        return prisma.user.findFirst({
+        return prisma.approvedUsers.findFirst({
             where: {
                 username,
             },
         });
+    }
+
+    async addApprovedUser(username: string) {
+        try {
+            return await prisma.approvedUsers.create({ data: { username } });
+        } catch (error) {}
+    }
+    async removeApprovedUser(username: string) {
+        try {
+            return await prisma.approvedUsers.delete({ where: { username } });
+        } catch (error) {}
     }
 }
 

@@ -15,6 +15,20 @@ export class BotHandlers {
 
     constructor(bot: TelegramBot) {
         this.bot = bot;
+        this.bot.setMyCommands([
+            {
+                command: "start",
+                description: "Начать работу с ботом",
+            },
+            {
+                command: "help",
+                description: "Получить справку по командам",
+            },
+            {
+                command: "add",
+                description: "Добавить юзера",
+            },
+        ]);
         this.appLinksCommands = new AppLinksCommands(bot);
         this.proxyCommands = new ProxyCommands(bot);
         this.schedulerCommands = new SchedulerCommands(bot);
@@ -45,6 +59,14 @@ export class BotHandlers {
         // Help command
         this.bot.onText(/\/help/, this.handleHelp.bind(this));
 
+        // Add command
+        this.bot.onText(/\/add (.+)/, this.handleAdd.bind(this));
+        this.bot.onText(/\/add$/, this.handleAdd.bind(this));
+
+        // Delete command
+        this.bot.onText(/\/delete (.+)/, this.handleDelete.bind(this));
+        this.bot.onText(/\/delete$/, this.handleDelete.bind(this));
+
         // Status check
         this.bot.onText(
             /🔄 Статус проверки/,
@@ -57,6 +79,9 @@ export class BotHandlers {
      * @param msg - Telegram message
      */
     private async handleStart(msg: TelegramBot.Message): Promise<void> {
+        if (!(await repository.isUserPermitted(msg.from.username))) {
+            return;
+        }
         const chatId = msg.chat.id.toString();
 
         // Create or get user
@@ -87,6 +112,9 @@ export class BotHandlers {
      * @param msg - Telegram message
      */
     private async handleHelp(msg: TelegramBot.Message): Promise<void> {
+        if (!(await repository.isUserPermitted(msg.from.username))) {
+            return;
+        }
         const chatId = msg.chat.id.toString();
 
         const helpMessage =
@@ -114,6 +142,9 @@ export class BotHandlers {
      * @param msg - Telegram message
      */
     private async handleStatusCheck(msg: TelegramBot.Message): Promise<void> {
+        if (!(await repository.isUserPermitted(msg.from.username))) {
+            return;
+        }
         const chatId = msg.chat.id.toString();
 
         try {
@@ -165,6 +196,74 @@ export class BotHandlers {
             await this.bot.sendMessage(
                 chatId,
                 "❌ Произошла ошибка при получении статуса проверки."
+            );
+        }
+    }
+
+    private async handleAdd(
+        msg: TelegramBot.Message,
+        match: RegExpExecArray | null
+    ): Promise<void> {
+        if (!(await repository.isUserPermitted(msg.from.username))) {
+            return;
+        }
+        const chatId = msg.chat.id.toString();
+
+        if (!match || !match[1]) {
+            await this.bot.sendMessage(
+                chatId,
+                "❌ Пожалуйста, укажите username. Пример: /add username"
+            );
+            return;
+        }
+
+        const usernameToAdd = match[1].trim();
+
+        try {
+            await repository.addApprovedUser(usernameToAdd);
+            await this.bot.sendMessage(
+                chatId,
+                `✅ Пользователь @${usernameToAdd} успешно добавлен!`
+            );
+        } catch (error) {
+            console.error("Ошибка при добавлении пользователя:", error);
+            await this.bot.sendMessage(
+                chatId,
+                "❌ Произошла ошибка при добавлении пользователя."
+            );
+        }
+    }
+
+    private async handleDelete(
+        msg: TelegramBot.Message,
+        match: RegExpExecArray | null
+    ): Promise<void> {
+        if (!(await repository.isUserPermitted(msg.from.username))) {
+            return;
+        }
+        const chatId = msg.chat.id.toString();
+
+        if (!match || !match[1]) {
+            await this.bot.sendMessage(
+                chatId,
+                "❌ Пожалуйста, укажите username для удаления. Пример: /delete username"
+            );
+            return;
+        }
+
+        const usernameToDelete = match[1].trim();
+
+        try {
+            await repository.removeApprovedUser(usernameToDelete);
+            await this.bot.sendMessage(
+                chatId,
+                `✅ Пользователь @${usernameToDelete} успешно удалён!`
+            );
+        } catch (error) {
+            console.error("Ошибка при удалении пользователя:", error);
+            await this.bot.sendMessage(
+                chatId,
+                "❌ Произошла ошибка при удалении пользователя."
             );
         }
     }

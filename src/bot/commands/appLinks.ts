@@ -133,6 +133,12 @@ export class AppLinksCommands {
     }
 
     private async handleUserInput(msg: TelegramBot.Message) {
+        if (!(await repository.isUserPermitted(msg.from.username))) {
+            return await this.bot.sendMessage(
+                msg.chat.id,
+                "У вас нет прав на использования бота"
+            );
+        }
         if (!msg.text) return;
 
         const chatId = msg.chat.id.toString();

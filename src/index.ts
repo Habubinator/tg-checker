@@ -2,6 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import { CONFIG } from "./config";
 import { BotHandlers } from "./bot/handlers";
 import { Scheduler } from "./services/scheduler";
+import { repository } from "./db/repository";
 /**
  * Main application entry point
  * Initializes the Telegram bot and sets up handlers
