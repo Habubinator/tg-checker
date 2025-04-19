@@ -21,5 +21,8 @@
         "puppeteer-extra-plugin-stealth": "^2.11.2",
         "puppeteer-extra-plugin-user-preferences": "^2.4.1",
         "uuid": "^11.0.5"
+    },
+    "devDependencies": {
+        "@types/node-telegram-bot-api": "^0.64.8"
     }
 }
