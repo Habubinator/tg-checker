@@ -153,8 +153,7 @@ export class BotHandlers {
                 statusMessage += result.isAvailable
                     ? `✅ ${result.appLink.packageName} — Доступно\n`
                     : `❌ ${result.appLink.packageName} — ${
-                          result.errorMessage ||
-                          "Это приложение сейчас временно недоступно"
+                          result.errorMessage || "Недоступно"
                       }\n`;
             }
 

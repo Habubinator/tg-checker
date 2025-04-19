@@ -85,8 +85,7 @@ export class AppChecker {
             };
 
             if (!found) {
-                result.errorMessage =
-                    "Это приложение сейчас временно недоступно";
+                result.errorMessage = "Недоступно";
             }
 
             return result;

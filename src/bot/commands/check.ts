@@ -222,8 +222,7 @@ export class CheckCommands {
                     return `✅ ${result.appLink.packageName} — Доступно`;
                 } else {
                     return `❌ ${result.appLink.packageName} — ${
-                        result.errorMessage ||
-                        "Это приложение сейчас временно недоступно"
+                        result.errorMessage || "Недоступно"
                     }`;
                 }
             });
