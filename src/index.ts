@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { CONFIG } from "./config";
 import { BotHandlers } from "./bot/handlers";
-
+import { Scheduler } from "./services/scheduler";
 /**
  * Main application entry point
  * Initializes the Telegram bot and sets up handlers
@@ -26,6 +26,9 @@ async function main(): Promise<void> {
         const handlers = new BotHandlers(bot);
         handlers.registerHandlers();
         console.log("Bot handlers registered successfully!");
+
+        const scheduler = new Scheduler(bot);
+        scheduler.init();
 
         // Log successful startup
         console.log("Bot is now running. Press CTRL+C to stop.");
