@@ -2,7 +2,7 @@ import { prisma } from "../database/prisma.database";
 import { googlePlayChecker } from "./googlePlayChecker";
 import { proxyService } from "./proxyService";
 import { bot } from "../bot";
-import { CheckResult } from "@prisma/client";
+import { CheckResult } from "../../generated/prisma";
 import cron from "node-cron";
 
 interface ScheduledJob {

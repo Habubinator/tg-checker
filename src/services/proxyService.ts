@@ -1,10 +1,9 @@
-import { prisma } from "../database/prisma.database";
+import { prisma } from "@database/";
+import { ProxyType, Proxy } from "../../generated/prisma";
 import { ParsedProxy } from "../types";
-import { Proxy, ProxyType as DBProxyType } from "@prisma/client";
 import https from "https";
 import http from "http";
 import { SocksProxyAgent } from "socks-proxy-agent";
-
 export class ProxyService {
     /**
      * Parse proxy string format: ip:port or ip:port:username:password
@@ -45,7 +44,7 @@ export class ProxyService {
      */
     public async testProxy(
         proxy: ParsedProxy,
-        proxyType: DBProxyType = DBProxyType.HTTP
+        proxyType: ProxyType = ProxyType.HTTP
     ): Promise<boolean> {
         return new Promise((resolve) => {
             try {
@@ -60,14 +59,14 @@ export class ProxyService {
                 let proxyAgent;
 
                 switch (proxyType) {
-                    case DBProxyType.HTTP:
-                    case DBProxyType.HTTPS:
+                    case ProxyType.HTTP:
+                    case ProxyType.HTTPS:
                         const proxyUrl = this.formatProxyUrl(
                             proxy,
-                            proxyType === DBProxyType.HTTPS
+                            proxyType === ProxyType.HTTPS
                         );
                         requestOptions.agent = new (
-                            proxyType === DBProxyType.HTTPS
+                            proxyType === ProxyType.HTTPS
                                 ? https.Agent
                                 : http.Agent
                         )({
@@ -81,7 +80,7 @@ export class ProxyService {
                         });
                         break;
 
-                    case DBProxyType.SOCKS5:
+                    case ProxyType.SOCKS5:
                         const socksProxyUrl = `socks5://${
                             proxy.username && proxy.password
                                 ? `${proxy.username}:${proxy.password}@`
@@ -183,7 +182,7 @@ export class ProxyService {
                         port: parsedProxy.port,
                         username: parsedProxy.username,
                         password: parsedProxy.password,
-                        type: DBProxyType.HTTP, // Default type
+                        type: ProxyType.HTTP,
                         user: {
                             connect: {
                                 id: userId,

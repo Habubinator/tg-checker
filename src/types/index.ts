@@ -16,6 +16,20 @@ export interface ParsedProxy {
     password?: string;
 }
 
+export interface Proxy {
+    id: string;
+    ipAddress: string;
+    port: string;
+    username?: string;
+    password?: string;
+    type: ProxyType;
+    isActive: boolean;
+    lastUsed?: Date;
+    userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export enum ProxyType {
     HTTP = "HTTP",
     HTTPS = "HTTPS",
