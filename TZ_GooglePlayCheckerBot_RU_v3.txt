@@ -49,3 +49,25 @@ https://play.google.com/store/apps/details?id=com.example.app2
 
 🧠 Технические детали:
 - Защита от бана: ротация User-Agent + таймаут между запросами
+
+src/
+├── bot/
+│   ├── commands/
+│   │   ├── appLinks.ts
+│   │   ├── proxy.ts
+│   │   ├── scheduler.ts
+│   │   └── check.ts
+│   ├── keyboard.ts
+│   ├── handlers.ts
+│   └── index.ts
+├── services/
+│   ├── appChecker.ts
+│   ├── proxyManager.ts
+│   └── scheduler.ts
+├── utils/
+│   ├── parser.ts
+│   └── userAgent.ts
+├── db/
+│   └── repository.ts
+├── config.ts
+└── index.ts

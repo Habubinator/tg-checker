@@ -156,7 +156,7 @@ export class Repository {
         });
     }
 
-    async getLatestCheckResults(userId: string): Promise<CheckResult[]> {
+    async getLatestCheckResults(userId: string) {
         const appLinks = await prisma.appLink.findMany({
             where: { userId },
             select: { id: true },
