@@ -9,43 +9,44 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(uuid())
-  telegramId    String          @unique
-  username      String?
-  firstName     String?
-  lastName      String?
-  createdAt     DateTime        @default(now())
-  appLinks      AppLink[]
-  proxies       Proxy[]
+  id             String          @id @default(uuid())
+  telegramId     String          @unique
+  username       String?
+  firstName      String?
+  lastName       String?
+  createdAt      DateTime        @default(now())
+  appLinks       AppLink[]
+  proxies        Proxy[]
   checkSchedules CheckSchedule[]
 }
 
 model AppLink {
-  id          String       @id @default(uuid())
-  url         String
-  packageName String
-  appName     String?
-  userId      String
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String        @id @default(uuid())
+  url          String
+  packageName  String
+  appName      String?
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   checkResults CheckResult[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  wasActive    Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model Proxy {
-  id          String       @id @default(uuid())
-  ipAddress   String
-  port        String
-  username    String?
-  password    String?
-  type        ProxyType    @default(HTTP)
-  isActive    Boolean      @default(true)
-  lastUsed    DateTime?
-  userId      String
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String        @id @default(uuid())
+  ipAddress    String
+  port         String
+  username     String?
+  password     String?
+  type         ProxyType     @default(HTTP)
+  isActive     Boolean       @default(true)
+  lastUsed     DateTime?
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   checkResults CheckResult[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 enum ProxyType {
@@ -55,22 +56,26 @@ enum ProxyType {
 }
 
 model CheckSchedule {
-  id          String       @id @default(uuid())
-  time        String       // Format: "HH:MM"
-  isActive    Boolean      @default(true)
-  userId      String
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id        String   @id @default(uuid())
+  time      String // Format: "HH:MM"
+  isActive  Boolean  @default(true)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model CheckResult {
-  id          String       @id @default(uuid())
-  appLinkId   String
-  appLink     AppLink      @relation(fields: [appLinkId], references: [id], onDelete: Cascade)
-  proxyId     String?
-  proxy       Proxy?       @relation(fields: [proxyId], references: [id], onDelete: SetNull)
-  isAvailable Boolean
+  id           String   @id @default(uuid())
+  appLinkId    String
+  appLink      AppLink  @relation(fields: [appLinkId], references: [id], onDelete: Cascade)
+  proxyId      String?
+  proxy        Proxy?   @relation(fields: [proxyId], references: [id], onDelete: SetNull)
+  isAvailable  Boolean
   errorMessage String?
-  checkTime   DateTime     @default(now())
+  checkTime    DateTime @default(now())
+}
+
+model ApprovedUsers {
+  username String @id
 }

@@ -178,6 +178,23 @@ export class Repository {
         });
     }
 
+    async wasLinkActive(id: string) {
+        return prisma.appLink.findUnique({
+            where: { id, wasActive: true },
+            select: { id: true, wasActive: true },
+        });
+    }
+
+    async makeActive(id: string) {
+        return prisma.appLink.update({
+            where: { id },
+            data: {
+                wasActive: true,
+            },
+            select: { id: true },
+        });
+    }
+
     // Get all active users with schedules
     async getUsersWithSchedule(time: string): Promise<User[]> {
         return prisma.user.findMany({
@@ -201,6 +218,15 @@ export class Repository {
     // Get all users
     async getAllUsers(): Promise<User[]> {
         return prisma.user.findMany();
+    }
+
+    // Auth
+    async isUserPermitted(username: string) {
+        return prisma.user.findFirst({
+            where: {
+                username,
+            },
+        });
     }
 }
 
