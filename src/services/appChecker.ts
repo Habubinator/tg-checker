@@ -63,9 +63,7 @@ export class AppChecker {
             await page.goto(appLink.url, { waitUntil: "domcontentloaded" });
 
             // Check if the app is available
-            const notFoundSelector =
-                'body:contains("not found"), body:contains("not be found"), body:contains("unavailable")';
-            const isNotFound = (await page.$(notFoundSelector)) !== null;
+            const found = (await page.$("#error-section")) == null;
 
             // Try to extract app name if available
             let appName = appLink.appName;
@@ -82,11 +80,11 @@ export class AppChecker {
             const result: CheckResult = {
                 appLink,
                 proxy,
-                isAvailable: !isNotFound,
+                isAvailable: found,
                 appName,
             };
 
-            if (isNotFound) {
+            if (!found) {
                 result.errorMessage =
                     "Это приложение сейчас временно недоступно";
             }
