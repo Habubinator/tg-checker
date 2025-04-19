@@ -17,16 +17,20 @@ export class BotHandlers {
         this.bot = bot;
         this.bot.setMyCommands([
             {
-                command: "start",
+                command: "/start",
                 description: "Начать работу с ботом",
             },
             {
-                command: "help",
+                command: "/help",
                 description: "Получить справку по командам",
             },
             {
-                command: "add",
+                command: "/add",
                 description: "Добавить юзера",
+            },
+            {
+                command: "/delete",
+                description: "Удалить юзера",
             },
         ]);
         this.appLinksCommands = new AppLinksCommands(bot);
