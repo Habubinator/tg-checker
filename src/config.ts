@@ -7,10 +7,12 @@ export const CONFIG = {
         token: process.env.BOT_TOKEN || "",
     },
     app: {
-        maxLinksPerUser: parseInt(process.env.MAX_LINKS_PER_USER || "100"),
-        maxProxiesPerUser: parseInt(process.env.MAX_PROXIES_PER_USER || "50"),
+        maxLinksPerUser: parseInt(process.env.MAX_LINKS_PER_USER || "10000"),
+        maxProxiesPerUser: parseInt(
+            process.env.MAX_PROXIES_PER_USER || "10000"
+        ),
         maxSchedulesPerUser: parseInt(
-            process.env.MAX_SCHEDULES_PER_USER || "5"
+            process.env.MAX_SCHEDULES_PER_USER || "10000"
         ),
         requestTimeout: parseInt(process.env.REQUEST_TIMEOUT || "30000"),
         delayBetweenRequests: parseInt(
