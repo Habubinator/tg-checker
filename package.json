@@ -1,0 +1,25 @@
+{
+    "name": "request-cacher",
+    "version": "1.0.0",
+    "description": "A module to cash pupeteer request and reuse them",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "dev": "nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"src/**/*.spec.ts\" --exec \"npx tsx src/index.ts\""
+    },
+    "author": "Hudymenko Yevhenii",
+    "license": "MIT",
+    "dependencies": {
+        "@lem0-packages/puppeteer-page-proxy": "^1.4.1",
+        "@prisma/client": "^6.6.0",
+        "dotenv": "^16.5.0",
+        "node-telegram-bot-api": "^0.66.0",
+        "prisma": "^6.6.0",
+        "puppeteer": "^24.2.0",
+        "puppeteer-extra": "^3.3.6",
+        "puppeteer-extra-plugin-stealth": "^2.11.2",
+        "puppeteer-extra-plugin-user-preferences": "^2.4.1",
+        "uuid": "^11.0.5"
+    }
+}

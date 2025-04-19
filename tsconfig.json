@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "module": "NodeNext",
+        "target": "ESNext",
+        "declaration": false,
+        "removeComments": false,
+        "preserveConstEnums": true,
+        "pretty": true,
+        "noEmitHelpers": false,
+        "importHelpers": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "strictNullChecks": false,
+        "noImplicitAny": false,
+        "strictBindCallApply": false,
+        "forceConsistentCasingInFileNames": false,
+        "allowSyntheticDefaultImports": true,
+        "incremental": true,
+        "noFallthroughCasesInSwitch": false,
+        "sourceMap": true,
+        "outDir": "./dist",
+        "baseUrl": "./",
+        "paths": {
+            "@*": ["./src/*"]
+        }
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "**/*spec.ts"]
+}
