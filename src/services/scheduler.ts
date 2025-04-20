@@ -104,7 +104,7 @@ export class Scheduler {
                 await appChecker.delay(CONFIG.app.delayBetweenRequests);
             }
 
-            // Send final results
+            // Формируем все результаты
             const resultMessages = results.map((result) => {
                 if (result.isAvailable) {
                     return `✅ ${result.appLink.packageName} — Доступно`;
@@ -115,13 +115,37 @@ export class Scheduler {
                 }
             });
 
-            await this.bot.editMessageText(
-                `✅ Проверка завершена!\n\n${resultMessages.join("\n")}`,
-                {
-                    chat_id: telegramId,
-                    message_id: statusMessage.message_id,
+            // Константа лимита
+            const MAX_MESSAGE_LENGTH = 4000; // запас для текста заголовка
+
+            // Разбиваем на чанки
+            let chunks: string[] = [];
+            let currentChunk = "✅ Проверка завершена!\n\n";
+
+            for (const message of resultMessages) {
+                if (
+                    (currentChunk + message + "\n").length > MAX_MESSAGE_LENGTH
+                ) {
+                    chunks.push(currentChunk);
+                    currentChunk = message;
+                } else {
+                    currentChunk += (currentChunk ? "\n" : "") + message;
                 }
-            );
+            }
+            if (currentChunk) {
+                chunks.push(currentChunk);
+            }
+
+            // Отправляем первую часть через editMessageText
+            await this.bot.editMessageText(chunks[0], {
+                chat_id: telegramId,
+                message_id: statusMessage.message_id,
+            });
+
+            // Остальные части отправляем отдельными сообщениями
+            for (let i = 1; i < chunks.length; i++) {
+                await this.bot.sendMessage(telegramId, chunks[i]);
+            }
         } catch (error) {
             console.error("Error during check:", error);
             this.bot.sendMessage(
