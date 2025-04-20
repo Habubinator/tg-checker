@@ -175,26 +175,50 @@ export class BotHandlers {
             const latestCheckTime = results[0].checkTime;
             const formattedDate = latestCheckTime.toLocaleString("ru-RU");
 
-            let statusMessage = `📊 *Результаты последней проверки от ${formattedDate}*\n\n`;
-
             const available = results.filter((r) => r.isAvailable).length;
             const unavailable = results.length - available;
 
-            statusMessage += `✅ Доступно: ${available}\n`;
-            statusMessage += `❌ Недоступно: ${unavailable}\n\n`;
+            const header =
+                `📊 *Результаты последней проверки от ${formattedDate}*\n\n` +
+                `✅ Доступно: ${available}\n` +
+                `❌ Недоступно: ${unavailable}\n\n`;
 
-            // List all results
-            for (const result of results) {
-                statusMessage += result.isAvailable
-                    ? `✅ ${result.appLink.packageName} — Доступно\n`
+            // Prepare individual result messages
+            const resultMessages = results.map((result) =>
+                result.isAvailable
+                    ? `✅ ${result.appLink.packageName} — Доступно`
                     : `❌ ${result.appLink.packageName} — ${
                           result.errorMessage || "Недоступно"
-                      }\n`;
+                      }`
+            );
+
+            // Constants
+            const MAX_MESSAGE_LENGTH = 4000; // запас под разметку
+
+            // Split into chunks
+            let chunks: string[] = [];
+            let currentChunk = header;
+
+            for (const message of resultMessages) {
+                if (
+                    (currentChunk + "\n" + message).length > MAX_MESSAGE_LENGTH
+                ) {
+                    chunks.push(currentChunk);
+                    currentChunk = message;
+                } else {
+                    currentChunk += (currentChunk ? "\n" : "") + message;
+                }
+            }
+            if (currentChunk) {
+                chunks.push(currentChunk);
             }
 
-            await this.bot.sendMessage(chatId, statusMessage, {
-                parse_mode: "Markdown",
-            });
+            // Send chunks
+            for (const chunk of chunks) {
+                await this.bot.sendMessage(chatId, chunk, {
+                    parse_mode: "Markdown",
+                });
+            }
         } catch (error) {
             console.error("Error in status check:", error);
             await this.bot.sendMessage(

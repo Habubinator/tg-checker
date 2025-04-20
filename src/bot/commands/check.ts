@@ -216,7 +216,7 @@ export class CheckCommands {
                 await appChecker.delay(CONFIG.app.delayBetweenRequests);
             }
 
-            // Send final results
+            // Собираем сообщения
             const resultMessages = results.map((result) => {
                 if (result.isAvailable) {
                     return `✅ ${result.appLink.packageName} — Доступно`;
@@ -227,13 +227,37 @@ export class CheckCommands {
                 }
             });
 
+            const MAX_MESSAGE_LENGTH = 4000;
+            let chunks: string[] = [];
+            let currentChunk = "";
+
+            for (const message of resultMessages) {
+                if (
+                    (currentChunk + "\n" + message).length > MAX_MESSAGE_LENGTH
+                ) {
+                    chunks.push(currentChunk);
+                    currentChunk = message;
+                } else {
+                    currentChunk += (currentChunk ? "\n" : "") + message;
+                }
+            }
+            if (currentChunk) {
+                chunks.push(currentChunk);
+            }
+
+            // Отправляем первую часть через editMessageText
             await this.bot.editMessageText(
-                `✅ Проверка завершена!\n\n${resultMessages.join("\n")}`,
+                `✅ Проверка завершена!\n\n${chunks[0]}`,
                 {
                     chat_id: telegramId,
                     message_id: statusMessage.message_id,
                 }
             );
+
+            // Остальные части отправляем отдельными сообщениями
+            for (let i = 1; i < chunks.length; i++) {
+                await this.bot.sendMessage(telegramId, chunks[i]);
+            }
         } catch (error) {
             console.error("Error during check:", error);
             await this.bot.sendMessage(
